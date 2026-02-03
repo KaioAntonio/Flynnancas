@@ -18,7 +18,6 @@ export default function Flynnancas() {
     let balance = initialAmount;
     let totalDeposited = initialAmount;
 
-    // Adiciona o ponto inicial se houver valor inicial
     if (initialAmount > 0) {
       data.push({
         month: 0,
@@ -58,6 +57,16 @@ export default function Flynnancas() {
       currency: 'BRL',
       minimumFractionDigits: 2
     }).format(value);
+  };
+
+  // Formato compacto para mobile
+  const formatCurrencyCompact = (value) => {
+    if (value >= 1000000) {
+      return `R$ ${(value / 1000000).toFixed(1)}M`;
+    } else if (value >= 100000) {
+      return `R$ ${(value / 1000).toFixed(0)}k`;
+    }
+    return formatCurrency(value);
   };
 
   const CustomTooltip = ({ active, payload }) => {
@@ -108,7 +117,7 @@ export default function Flynnancas() {
             transition={{ delay: 0.1 }}
             className="space-y-6"
           >
-            {/* Initial Amount - NOVO */}
+            {/* Initial Amount */}
             <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 border border-slate-700/50 hover:border-amber-500/30 transition-all duration-300">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-amber-500/20 p-2 rounded-xl">
@@ -245,7 +254,7 @@ export default function Flynnancas() {
             className="space-y-6"
           >
             {/* Main Result Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-cyan-500/20 backdrop-blur-xl rounded-3xl p-8 border border-emerald-500/30">
+            <div className="relative overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-cyan-500/20 backdrop-blur-xl rounded-3xl p-4 sm:p-6 md:p-8 border border-emerald-500/30">
               <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
               <div className="relative">
                 <div className="flex items-center gap-2 text-emerald-400 mb-2">
@@ -258,43 +267,47 @@ export default function Flynnancas() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="text-4xl md:text-5xl font-bold text-white mb-6"
+                    className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 break-all"
                   >
                     {formatCurrency(calculations.finalBalance)}
                   </motion.div>
                 </AnimatePresence>
                 
-                <div className="grid grid-cols-3 gap-3">
+                {/* Cards responsivos - CORRIGIDO */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
                   {/* Valor Inicial */}
-                  <div className="bg-slate-900/50 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 text-amber-400 mb-1">
-                      <Wallet className="w-4 h-4" />
-                      <span className="text-xs uppercase tracking-wider">Inicial</span>
+                  <div className="bg-slate-900/50 rounded-xl sm:rounded-2xl p-2 sm:p-3 md:p-4 min-w-0">
+                    <div className="flex items-center gap-1 sm:gap-2 text-amber-400 mb-1">
+                      <Wallet className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[10px] sm:text-xs uppercase tracking-wider truncate">Inicial</span>
                     </div>
-                    <p className="text-lg font-semibold text-white">
-                      {formatCurrency(initialAmount)}
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-white truncate">
+                      <span className="hidden sm:inline">{formatCurrency(initialAmount)}</span>
+                      <span className="sm:hidden">{formatCurrencyCompact(initialAmount)}</span>
                     </p>
                   </div>
                   
                   {/* Total Investido */}
-                  <div className="bg-slate-900/50 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 text-blue-400 mb-1">
-                      <PiggyBank className="w-4 h-4" />
-                      <span className="text-xs uppercase tracking-wider">Investido</span>
+                  <div className="bg-slate-900/50 rounded-xl sm:rounded-2xl p-2 sm:p-3 md:p-4 min-w-0">
+                    <div className="flex items-center gap-1 sm:gap-2 text-blue-400 mb-1">
+                      <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[10px] sm:text-xs uppercase tracking-wider truncate">Investido</span>
                     </div>
-                    <p className="text-lg font-semibold text-white">
-                      {formatCurrency(calculations.totalDeposited)}
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-white truncate">
+                      <span className="hidden sm:inline">{formatCurrency(calculations.totalDeposited)}</span>
+                      <span className="sm:hidden">{formatCurrencyCompact(calculations.totalDeposited)}</span>
                     </p>
                   </div>
                   
                   {/* Rendimento */}
-                  <div className="bg-slate-900/50 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 text-purple-400 mb-1">
-                      <Target className="w-4 h-4" />
-                      <span className="text-xs uppercase tracking-wider">Rendimento</span>
+                  <div className="bg-slate-900/50 rounded-xl sm:rounded-2xl p-2 sm:p-3 md:p-4 min-w-0">
+                    <div className="flex items-center gap-1 sm:gap-2 text-purple-400 mb-1">
+                      <Target className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                      <span className="text-[10px] sm:text-xs uppercase tracking-wider truncate">Rendimento</span>
                     </div>
-                    <p className="text-lg font-semibold text-emerald-400">
-                      +{formatCurrency(calculations.totalEarnings)}
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg font-semibold text-emerald-400 truncate">
+                      <span className="hidden sm:inline">+{formatCurrency(calculations.totalEarnings)}</span>
+                      <span className="sm:hidden">+{formatCurrencyCompact(calculations.totalEarnings)}</span>
                     </p>
                   </div>
                 </div>
@@ -302,7 +315,7 @@ export default function Flynnancas() {
             </div>
 
             {/* Chart */}
-            <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-6 border border-slate-700/50">
+            <div className="bg-slate-800/50 backdrop-blur-xl rounded-3xl p-4 sm:p-6 border border-slate-700/50">
               <h3 className="text-slate-300 font-medium mb-4 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-emerald-400" />
                 Evolução do Patrimônio
@@ -330,6 +343,7 @@ export default function Flynnancas() {
                       stroke="#64748b"
                       tick={{ fill: '#64748b', fontSize: 12 }}
                       tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+                      width={40}
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Area
@@ -351,14 +365,14 @@ export default function Flynnancas() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <div className="flex justify-center gap-6 mt-4">
+              <div className="flex justify-center gap-4 sm:gap-6 mt-4 flex-wrap">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                  <span className="text-sm text-slate-400">Saldo Total</span>
+                  <span className="text-xs sm:text-sm text-slate-400">Saldo Total</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-                  <span className="text-sm text-slate-400">Total Investido</span>
+                  <span className="text-xs sm:text-sm text-slate-400">Total Investido</span>
                 </div>
               </div>
             </div>
